@@ -116,8 +116,7 @@ class DeviceCalendarPlugin {
     final result = Result<bool>();
 
     if (eventId?.isEmpty ?? true) {
-      result.errorMessages.add(
-          '[${ErrorCodes.invalidArguments}] ${ErrorMessages.deleteEventInvalidArgumentsMessage}');
+      result.data = false;
       return result;
     }
 
