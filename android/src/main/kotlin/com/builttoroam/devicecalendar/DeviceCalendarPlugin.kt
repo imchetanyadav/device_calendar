@@ -19,6 +19,7 @@ class DeviceCalendarPlugin() : MethodCallHandler {
     private val HAS_PERMISSIONS_METHOD = "hasPermissions"
     private val RETRIEVE_CALENDARS_METHOD = "retrieveCalendars"
     private val RETRIEVE_EVENTS_METHOD = "retrieveEvents"
+    private val VIEW_EVENT_METHOD = "viewEvent"
     private val DELETE_EVENT_METHOD = "deleteEvent"
     private val DELETE_EVENT_INSTANCE_METHOD = "deleteEventInstance"
     private val CREATE_OR_UPDATE_EVENT_METHOD = "createOrUpdateEvent"
@@ -107,6 +108,11 @@ class DeviceCalendarPlugin() : MethodCallHandler {
                 val event = parseEventArgs(call, calendarId)
 
                 _calendarDelegate.createOrUpdateEvent(calendarId!!, event, result)
+            }
+            VIEW_EVENT_METHOD -> {
+                val eventId = call.argument<String>(EVENT_ID_ARGUMENT)
+
+                _calendarDelegate.viewEvent(eventId!!, result)
             }
             DELETE_EVENT_METHOD -> {
                 val calendarId = call.argument<String>(CALENDAR_ID_ARGUMENT)

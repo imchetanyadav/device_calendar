@@ -2,6 +2,8 @@ package com.builttoroam.devicecalendar
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
@@ -388,6 +390,31 @@ class CalendarDelegate : PluginRegistry.RequestPermissionsResultListener {
             val parameters = CalendarMethodsParametersCacheModel(pendingChannelResult, CREATE_OR_UPDATE_EVENT_REQUEST_CODE, calendarId)
             parameters.event = event
             requestPermissions(parameters)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun viewEvent(eventId: String, pendingChannelResult: MethodChannel.Result) {
+        if (arePermissionsGranted()) {
+            if (eventId == null) {
+                finishWithError(GENERIC_ERROR, CREATE_EVENT_ARGUMENTS_NOT_VALID_MESSAGE, pendingChannelResult)
+                return
+            }
+
+            try {
+                var eventIdNumber = eventId.toLongOrNull();
+                if(eventIdNumber != null) {
+                    val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventIdNumber)
+                    val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    _context?.startActivity(intent)
+
+                    finishWithSuccess(eventId.toString(), pendingChannelResult)
+                }
+            } catch (e: Exception) {
+                finishWithError(GENERIC_ERROR, e.message, pendingChannelResult)
+            }
+        } else {
         }
     }
 

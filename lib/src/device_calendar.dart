@@ -112,6 +112,25 @@ class DeviceCalendarPlugin {
     );
   }
 
+  Future<Result<bool>> viewEvent(String eventId) async {
+    final result = Result<bool>();
+
+    if (eventId?.isEmpty ?? true) {
+      result.errorMessages.add(
+          '[${ErrorCodes.invalidArguments}] ${ErrorMessages.deleteEventInvalidArgumentsMessage}');
+      return result;
+    }
+
+    try {
+      result.data = await channel.invokeMethod('viewEvent',
+          <String, Object>{'eventId': eventId});
+    } catch (e) {
+//      _parsePlatformExceptionAndUpdateResult<bool>(e, result);
+    }
+
+    return result;
+  }
+
   /// Deletes an event from a calendar. For a recurring event, this will delete all instances of it.\
   /// To delete individual instance of a recurring event, please use [deleteEventInstance()]
   ///
